@@ -12,6 +12,10 @@ fn main() {
                 .takes_value(true)
         )
         .arg(
+            Arg::with_name("human")
+                .short("H")
+        )
+        .arg(
             Arg::with_name("name")
         )
         .arg(
@@ -22,4 +26,6 @@ fn main() {
     println!("{:?}", matches.value_of("name"));
     println!("{:?}", matches.value_of("age"));
     println!("{:?}", matches.value_of("gender"));
+    println!("{:?}", matches.is_present("gender"));
+    println!("{:?}", matches.is_present("human"))
 }

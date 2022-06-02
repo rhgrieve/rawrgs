@@ -124,6 +124,15 @@ impl ArgMatches {
         return None;
     }
 
+    pub fn is_present(&self, name: &str) -> bool {
+        for arg in &self.matches {
+            if name == arg.name {
+                return true
+            }
+        }
+        return false;
+    }
+
     fn get_matches(&self) -> &Vec<ArgMatch> {
         return &self.matches;
     }
