@@ -143,6 +143,7 @@ pub struct Arg {
     short: &'static str,
     long: &'static str,
     takes_value: bool,
+    is_required: bool,
     value_name: &'static str,
     help: &'static str,
     matched: bool,
@@ -156,6 +157,7 @@ impl Arg {
             short: "",
             long: "",
             takes_value: false,
+            is_required: false,
             value_name: "",
             help: "",
             matched: false,
@@ -175,6 +177,11 @@ impl Arg {
 
     pub fn takes_value(mut self, takes_value: bool) -> Self {
         self.takes_value = takes_value;
+        return self;
+    }
+
+    pub fn required(mut self, is_required: bool) -> Self {
+        self.is_required = is_required;
         return self;
     }
 
@@ -243,6 +250,10 @@ impl App {
     pub fn arg(mut self, mut arg: Arg) -> Self {
         if arg.long.is_empty() && !arg.short.is_empty() {
             arg.long = arg.name;
+        }
+
+        if self.args.get_positionals().len() > 1 {
+            arg.is_required = true;
         }
 
         self.args = self.args.push(arg);
@@ -371,6 +382,10 @@ impl App {
     fn validate_positionals(&self) -> Result<(), String> {
         let positionals = self.args.get_positionals();
         let matches = self.matches.get_matches();
+
+        if positionals.len() == 1 && !positionals[0].is_required {
+            return Ok(())
+        }
 
         'outer: for arg in positionals {
             for matched in matches {
