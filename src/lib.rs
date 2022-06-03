@@ -224,7 +224,7 @@ impl App {
         App {
             name: name,
             author: "",
-            version: env!("CARGO_PKG_VERSION"),
+            version: "",
             about: "",
             args: Args::with_defaults(),
             matches: ArgMatches::new(),
@@ -407,7 +407,7 @@ impl App {
         let options_vec = self.args.get_options();
         let positionals_vec = self.args.get_positionals();
 
-        let mut usage_string = vec!(env!("CARGO_PKG_NAME").to_string());
+        let mut usage_string = vec![self.name.to_string()];
 
         let has_options = !options_vec.is_empty();
         if has_options {
