@@ -260,6 +260,21 @@ impl App {
         return self;
     }
 
+    pub fn parse_argument(&mut self, current_arg: String) -> Result<(), String> {
+        if current_arg.starts_with("--") {
+            self.consume_flag(&current_arg, FlagType::Long)?
+        } else if current_arg.starts_with("-") {
+            let short_group = current_arg.trim_start_matches("-");
+            for short_flag in short_group.chars() {
+                self.consume_flag(&short_flag.to_string(), FlagType::Short)?;
+            }
+        } else {
+            self.consume_positional(&current_arg)?;
+        }
+
+        Ok(())
+    }
+
     pub fn get_matches(mut self) -> ArgMatches {
         let args: Vec<String> = env::args().collect();
 
@@ -271,23 +286,12 @@ impl App {
                 continue;
             }
 
-            let mut flag_type: Option<FlagType> = None;
-            if current_arg.starts_with("--") {
-                flag_type = Some(FlagType::Long);
-            } else if current_arg.starts_with("-") {
-                flag_type = Some(FlagType::Short);
-            }
+            let match_result = self.parse_argument(current_arg);
 
-            let match_result = match flag_type {
-                Some(flag_type) => self.consume_flag(&current_arg, flag_type),
-                None => self.consume_positional(&current_arg)
-            };
-            
             if let Err(err) = match_result {
                 eprintln!("{}", err);
                 process::exit(1);
             }
-
         }
 
         self.check_internal_flags();
