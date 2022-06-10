@@ -5,6 +5,8 @@ fn main() {
         .author("Harrison Grieve")
         .version("0.1")
         .about("A way to test a CLI app")
+        .arg(Arg::with_name("path")
+        .required(true))
         .arg(
             Arg::with_name("gender")
                 .long("gender")

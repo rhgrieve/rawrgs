@@ -418,7 +418,12 @@ impl App {
 
         if !positionals_vec.is_empty() {
             for arg in positionals_vec {
-                usage_string.push(arg.name.to_uppercase())
+                if arg.is_required {
+                    usage_string.push(arg.name.to_uppercase())
+                } else {
+                    usage_string.push(format!("[{}]", arg.name.to_uppercase()))
+                }
+                
             }
         }
 
