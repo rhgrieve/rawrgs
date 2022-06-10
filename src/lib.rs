@@ -1,5 +1,7 @@
 use std::{env, process};
 
+use tabular::Tabular;
+
 enum FlagType {
     Long,
     Short,
@@ -426,14 +428,18 @@ impl App {
 
         if has_options {
             println!("OPTIONS:");
-            for opt in options_vec {
-                let mut opt_string: Vec<String> = vec!();
-                if !opt.short.is_empty() {
-                    opt_string.push(format!("-{},", opt.short));
-                }
-                opt_string.push(format!("--{}", opt.long));
-                println!("  {}", opt_string.join(" "));
-            }
+
+            let opt_table: Vec<Vec<String>> = options_vec.iter()
+                .map(|o| {
+                    if o.short.is_empty() {
+                        vec![" ".to_string(), o.short.to_string(), format!("--{}", o.long), o.help.to_string()]
+                    } else {
+                        vec![" ".to_string(), format!("-{}", o.short), format!("--{}", o.long), o.help.to_string()]
+                    }
+                })
+                .collect();
+
+            println!("{}", opt_table.to_table());
         }
     }
 

@@ -7,12 +7,13 @@ fn main() {
         .about("A way to test a CLI app")
         .arg(
             Arg::with_name("gender")
-                .short("g")
                 .long("gender")
+                .help("Specify your gender")
         )
         .arg(
             Arg::with_name("human")
                 .short("H")
+                .help("Specify if you are human or not")
         );
 
     let matches = app.get_matches();
